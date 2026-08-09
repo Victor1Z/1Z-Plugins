@@ -35,4 +35,8 @@ python plugins/marketplace-manager/scripts/sincronizar_marketplace.py --check
 
 ## Campos preservados na sincronização
 
-O catálogo é regenerado, mas estes campos são mantidos como você escreveu: `name` e `owner` do marketplace, e por plugin `source`, `category`, `tags`, `strict` e `relevance`. O resto (`description`, `version`, `author`, `keywords`, `displayName`) vem sempre do `plugin.json`.
+O catálogo é regenerado, mas estes campos são mantidos como você escreveu: `name` e `owner` do marketplace, e por plugin `category`, `tags`, `strict` e `relevance`. O resto (`description`, `version`, `author`, `keywords`, `displayName`) vem sempre do `plugin.json`.
+
+O `source` é **sempre** regenerado como `./plugins/<slug>`, de propósito: preservá-lo faria o script nunca conseguir corrigir um caminho errado, que é justamente o erro que derruba a sincronização do marketplace com uma mensagem genérica de "verifique a URL". A exceção é `source` em forma de objeto (`{"source": "github", "repo": "..."}`), que descreve um plugin hospedado fora deste repositório e não dá para derivar da pasta — esse é preservado.
+
+Não use `metadata.pluginRoot` junto com `source` começando em `./`: as duas formas juntas são ambíguas quanto a onde o caminho é resolvido.

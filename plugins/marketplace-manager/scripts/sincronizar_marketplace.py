@@ -22,7 +22,12 @@ from pathlib import Path
 
 # Campos que pertencem ao catalogo e nao ao manifesto: a sincronizacao preserva
 # o que ja estiver escrito neles em vez de sobrescrever.
-CAMPOS_SO_DO_CATALOGO = ("source", "category", "tags", "strict", "relevance")
+#
+# 'source' NAO entra aqui de proposito. Preservar caminho local faria o script
+# nunca conseguir corrigir um source errado -- justamente o tipo de erro que ele
+# existe para pegar. Source externo (objeto {"source": "github", ...}) e tratado
+# a parte em mesclar().
+CAMPOS_SO_DO_CATALOGO = ("category", "tags", "strict", "relevance")
 
 # Campos copiados do plugin.json para a entrada do catalogo, nessa ordem.
 CAMPOS_HERDADOS = (
@@ -154,7 +159,10 @@ def coletar_plugins(raiz: Path) -> tuple:
             erros.append((pasta.name, problemas))
             continue
 
-        entrada = {"name": manifesto["name"], "source": f"./{pasta.name}"}
+        # Caminho completo a partir da raiz do repo, sem depender de
+        # metadata.pluginRoot: as duas formas juntas sao ambiguas e o resolvedor
+        # pode procurar <repo>/<slug> em vez de <repo>/plugins/<slug>.
+        entrada = {"name": manifesto["name"], "source": f"./plugins/{pasta.name}"}
         for campo in CAMPOS_HERDADOS:
             if campo in manifesto:
                 entrada[campo] = manifesto[campo]
@@ -171,7 +179,10 @@ def mesclar(catalogo_antigo: dict, entradas: list) -> dict:
     for entrada in entradas:
         anterior = antigas.get(entrada["name"], {})
         preservado = {c: anterior[c] for c in CAMPOS_SO_DO_CATALOGO if c in anterior}
-        # 'source' customizado no catalogo vence o padrao ./<pasta>.
+        # Source externo (dict: github, git, url) descreve um plugin que mora
+        # fora deste repo -- nao da para derivar da pasta, entao preserva.
+        if isinstance(anterior.get("source"), dict):
+            preservado["source"] = anterior["source"]
         entrada = {**entrada, **preservado}
         # 'name' e 'source' primeiro, para o arquivo ficar legivel.
         novas.append({

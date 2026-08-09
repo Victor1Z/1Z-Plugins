@@ -5,13 +5,10 @@
   "owner": {
     "name": "Victor Both"
   },
-  "metadata": {
-    "pluginRoot": "./plugins"
-  },
   "plugins": [
     {
       "name": "cerebro-memoria",
-      "source": "./cerebro-memoria",
+      "source": "./plugins/cerebro-memoria",
       "displayName": "Cérebro Memória",
       "description": "Memória persistente pessoal em Obsidian, usando o vault como única fonte de verdade (sem banco vetorial, sem SQLite).",
       "version": "1.0.0",
@@ -26,7 +23,7 @@
     },
     {
       "name": "marketplace-manager",
-      "source": "./marketplace-manager",
+      "source": "./plugins/marketplace-manager",
       "displayName": "Marketplace Manager",
       "description": "Cria, valida e registra os plugins deste marketplace, mantendo o .claude-plugin/marketplace.json sempre derivado dos manifestos reais.",
       "version": "1.0.0",
