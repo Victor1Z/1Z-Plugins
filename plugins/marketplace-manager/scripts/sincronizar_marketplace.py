@@ -118,14 +118,36 @@ def validar_plugin(pasta: Path, manifesto: dict) -> list:
             "agents/, hooks/ ou .mcp.json) -- o plugin instalaria sem fazer nada"
         )
 
-    skill_raiz = pasta / "SKILL.md"
-    if skill_raiz.is_file() and not (pasta / "skills").is_dir():
-        cabecalho = skill_raiz.read_text(encoding="utf-8", errors="replace")[:2000]
-        if not re.search(r"^name:\s*\S", cabecalho, re.MULTILINE):
-            problemas.append(
-                "SKILL.md na raiz sem 'name:' no frontmatter -- o Claude Code cairia "
-                "no nome do diretorio de instalacao, que muda a cada atualizacao"
-            )
+    dir_skills = pasta / "skills"
+
+    # SKILL.md na raiz e documentado como fallback, mas nem toda superficie que
+    # lista as habilidades de um plugin instalado enumera ele -- na pratica o
+    # plugin aparece "sem habilidades". Use sempre skills/<slug>/SKILL.md.
+    if (pasta / "SKILL.md").is_file():
+        problemas.append(
+            "SKILL.md na raiz do plugin -- mova para "
+            f"skills/{pasta.name}/SKILL.md (junto com references/ e scripts/, "
+            "para os caminhos relativos continuarem validos). A raiz e so fallback "
+            "e nem toda superficie lista a skill a partir dela"
+        )
+
+    if dir_skills.is_dir():
+        skills = sorted(dir_skills.glob("*/SKILL.md"))
+        if not skills:
+            problemas.append("skills/ existe mas nao tem nenhuma pasta com SKILL.md dentro")
+        for skill in skills:
+            cabecalho = skill.read_text(encoding="utf-8", errors="replace")[:2000]
+            rel = skill.relative_to(pasta).as_posix()
+            if not re.search(r"^name:\s*\S", cabecalho, re.MULTILINE):
+                problemas.append(
+                    f"{rel} sem 'name:' no frontmatter -- o Claude Code cairia no nome "
+                    "do diretorio de instalacao, que muda a cada atualizacao"
+                )
+            if not re.search(r"^description:\s*\S", cabecalho, re.MULTILINE):
+                problemas.append(
+                    f"{rel} sem 'description:' no frontmatter -- e ela que decide "
+                    "quando a skill e ativada; sem ela a skill nunca dispara sozinha"
+                )
 
     for ref in pasta.rglob("*"):
         if ref.is_file() and ref.suffix in (".md", ".json") and "node_modules" not in ref.parts:

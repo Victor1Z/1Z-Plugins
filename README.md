@@ -35,12 +35,18 @@ python plugins/marketplace-manager/scripts/sincronizar_marketplace.py
 
 ```text
 .claude-plugin/
-└── marketplace.json          ← catálogo (GERADO — não editar à mão)
+└── marketplace.json              ← catálogo (GERADO — não editar à mão)
 plugins/
 └── <slug>/
     ├── .claude-plugin/
-    │   └── plugin.json       ← fonte de verdade do plugin
-    └── SKILL.md
+    │   └── plugin.json           ← fonte de verdade do plugin
+    └── skills/
+        └── <nome-da-skill>/
+            ├── SKILL.md
+            ├── references/
+            └── scripts/
 ```
 
 O catálogo é derivado dos `plugin.json`. Editar ele à mão faz catálogo e manifesto divergirem, e o sintoma disso (skill que não aparece, versão que não atualiza) nunca aponta para a causa.
+
+O `SKILL.md` nunca vai na raiz do plugin: os docs listam a raiz como fallback, mas nem toda superfície enumera a skill a partir dela — o plugin instala e aparece "sem habilidades". A validação do `marketplace-manager` recusa esse layout.

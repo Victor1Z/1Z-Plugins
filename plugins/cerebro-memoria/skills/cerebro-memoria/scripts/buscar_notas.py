@@ -21,9 +21,25 @@ from pathlib import Path
 
 FRONTMATTER_RE = re.compile(r'^---\s*\n(.*?)\n---\s*\n?', re.DOTALL)
 
+# Pastas internas do Obsidian que nunca devem virar resultado de busca.
+# '.trash' importa em particular: sem isso uma nota apagada volta a aparecer
+# na recuperacao de contexto, que e exatamente o oposto de apagar.
+PASTAS_IGNORADAS = {'_config', '.obsidian', '.trash'}
+
+
+def _limpar(valor):
+    return valor.strip().strip('"').strip("'")
+
 
 def parse_frontmatter(text):
-    """Parser simples de YAML frontmatter: chave: valor e listas com '- item'."""
+    """Parser simples de YAML frontmatter.
+
+    Entende 'chave: valor', listas em bloco ('- item') e listas inline
+    ('tags: [a, b]'). A forma inline e a que o Obsidian escreve e a que
+    qualquer um digita a mao -- sem ela o valor virava a string bruta
+    '[a, b]' e o filtro --tag falhava em silencio, retornando zero
+    resultados numa nota que tem a tag.
+    """
     m = FRONTMATTER_RE.match(text)
     if not m:
         return {}, text
@@ -33,13 +49,13 @@ def parse_frontmatter(text):
     current_key = None
     for line in raw.splitlines():
         stripped = line.strip()
-        if not stripped:
+        if not stripped or stripped.startswith('#'):
             continue
         if stripped.startswith('- '):
             if current_key:
                 data.setdefault(current_key, [])
                 if isinstance(data[current_key], list):
-                    data[current_key].append(stripped[2:].strip())
+                    data[current_key].append(_limpar(stripped[2:]))
             continue
         if ':' in line:
             key, _, val = line.partition(':')
@@ -48,17 +64,32 @@ def parse_frontmatter(text):
             if val == '':
                 data[key] = []
                 current_key = key
+            elif val.startswith('[') and val.endswith(']'):
+                itens = [_limpar(p) for p in val[1:-1].split(',')]
+                data[key] = [p for p in itens if p]
+                current_key = None
             else:
-                data[key] = val.strip('"').strip("'")
+                data[key] = _limpar(val)
                 current_key = None
     return data, body
+
+
+def normalizar_tags(valor):
+    """Devolve as tags como lista minuscula, sem o '#' que o Obsidian aceita."""
+    if isinstance(valor, list):
+        brutas = valor
+    elif valor in (None, ''):
+        brutas = []
+    else:
+        brutas = [valor]
+    return [str(t).strip().lstrip('#').lower() for t in brutas if str(t).strip()]
 
 
 def load_notes(vault):
     notes = []
     for path in vault.rglob('*.md'):
-        # ignora arquivos de config do próprio skill
-        if '_config' in path.relative_to(vault).parts:
+        # ignora config do proprio skill e pastas internas do Obsidian
+        if PASTAS_IGNORADAS & set(path.relative_to(vault).parts):
             continue
         try:
             text = path.read_text(encoding='utf-8')
@@ -81,9 +112,8 @@ def matches(note, args):
     if args.projeto and args.projeto.lower() not in str(fm.get('projeto', '')).lower():
         return False
     if args.tags:
-        raw_tags = fm.get('tags', [])
-        note_tags = [t.lower() for t in raw_tags] if isinstance(raw_tags, list) else [str(raw_tags).lower()]
-        if not all(t.lower() in note_tags for t in args.tags):
+        note_tags = normalizar_tags(fm.get('tags', []))
+        if not all(t in note_tags for t in normalizar_tags(args.tags)):
             return False
     if args.query:
         q = args.query.lower()
@@ -93,17 +123,30 @@ def matches(note, args):
     return True
 
 
+def primeira_linha_util(body, width):
+    """Primeira linha de conteudo real: pula titulo markdown e linhas vazias."""
+    for linha in body.splitlines():
+        linha = linha.strip()
+        if linha and not linha.startswith('#'):
+            return linha[:width]
+    return ''
+
+
 def snippet(note, query, width=160):
-    raw = note['raw']
-    if not query:
-        body = note['body'].strip()
-        return body.splitlines()[0][:width] if body else ''
-    idx = raw.lower().find(query.lower())
-    if idx == -1:
-        return ''
-    start = max(0, idx - width // 2)
-    end = min(len(raw), idx + width // 2)
-    return raw[start:end].replace('\n', ' ').strip()
+    """Trecho do CORPO da nota, nunca do frontmatter.
+
+    A busca casa contra a nota inteira (frontmatter incluso, o que e util para
+    achar por projeto/tag), mas o trecho vindo do frontmatter so mostrava
+    'tipo: projeto status: ativo ...' -- ruido, nao conteudo.
+    """
+    body = note['body']
+    if query:
+        idx = body.lower().find(query.lower())
+        if idx != -1:
+            start = max(0, idx - width // 2)
+            end = min(len(body), idx + width // 2)
+            return ' '.join(body[start:end].split())
+    return primeira_linha_util(body, width)
 
 
 def main():
@@ -141,7 +184,7 @@ def main():
             'tipo': fm.get('tipo', ''),
             'projeto': fm.get('projeto', ''),
             'status': fm.get('status', ''),
-            'tags': fm.get('tags', []) if isinstance(fm.get('tags', []), list) else [fm.get('tags')],
+            'tags': normalizar_tags(fm.get('tags', [])),
             'data': fm.get('data') or fm.get('data_evento') or fm.get('data_criacao', ''),
             'trecho': snippet(n, args.query),
         })

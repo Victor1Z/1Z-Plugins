@@ -100,25 +100,33 @@ def main() -> int:
     (destino / ".claude-plugin" / "plugin.json").write_text(
         renderizar(templates / "plugin.json.tmpl", valores), encoding="utf-8"
     )
-    (destino / "SKILL.md").write_text(
-        renderizar(templates / "SKILL.md.tmpl", valores), encoding="utf-8"
-    )
     (destino / "README.md").write_text(
         renderizar(templates / "README.md.tmpl", valores), encoding="utf-8"
     )
 
+    # skills/<slug>/ e nao SKILL.md na raiz: a raiz e so fallback e nem toda
+    # superficie enumera a skill a partir dela (o plugin aparece "sem habilidades").
+    dir_skill = destino / "skills" / args.nome
+    dir_skill.mkdir(parents=True)
+    (dir_skill / "SKILL.md").write_text(
+        renderizar(templates / "SKILL.md.tmpl", valores), encoding="utf-8"
+    )
+
+    # Pastas extras ficam junto do SKILL.md para os caminhos relativos que ele
+    # documenta (scripts/x.py, references/y.md) resolverem de dentro da skill.
     for extra in args.com:
-        pasta = destino / extra
+        pasta = dir_skill / extra
         pasta.mkdir()
         (pasta / "LEIA-ME.md").write_text(f"# {extra}/\n\n{EXTRAS[extra]}", encoding="utf-8")
 
     rel = destino.relative_to(raiz).as_posix()
+    rel_skill = dir_skill.relative_to(raiz).as_posix()
     print(f"[ok] plugin criado em {rel}/")
     print(f"     - {rel}/.claude-plugin/plugin.json")
-    print(f"     - {rel}/SKILL.md   <- escreva o description real (e ele que ativa a skill)")
+    print(f"     - {rel_skill}/SKILL.md   <- escreva o description real (e ele que ativa a skill)")
     print(f"     - {rel}/README.md")
     for extra in args.com:
-        print(f"     - {rel}/{extra}/")
+        print(f"     - {rel_skill}/{extra}/")
 
     if args.sem_sync:
         return 0

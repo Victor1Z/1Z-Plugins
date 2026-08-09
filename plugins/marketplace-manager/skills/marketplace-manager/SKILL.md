@@ -16,21 +16,25 @@ Isso importa porque o erro mais comum aqui é o catálogo e o manifesto discorda
 ```text
 1Z Plugin/
 ├── .claude-plugin/
-│   └── marketplace.json          ← catálogo (GERADO — não editar à mão)
+│   └── marketplace.json              ← catálogo (GERADO — não editar à mão)
 └── plugins/
     └── <slug>/
         ├── .claude-plugin/
-        │   └── plugin.json       ← fonte de verdade do plugin
-        ├── SKILL.md              ← skill única (frontmatter `name` obrigatório)
-        ├── skills/<nome>/SKILL.md  ← ou várias skills, uma pasta cada
-        ├── references/
-        └── scripts/
+        │   └── plugin.json           ← fonte de verdade do plugin
+        └── skills/
+            └── <nome-da-skill>/
+                ├── SKILL.md          ← frontmatter com `name` e `description`
+                ├── references/
+                └── scripts/
 ```
 
-Duas regras que não são óbvias e quebram na prática:
+Três regras que não são óbvias e quebram na prática:
 
-- **`SKILL.md` na raiz do plugin só vira skill se o frontmatter tiver `name:`.** Sem isso o Claude Code usa o nome do diretório de instalação, que para plugin vindo de marketplace é uma string de versão que muda a cada update — a skill troca de nome sozinha.
+- **Nunca `SKILL.md` na raiz do plugin.** Os docs dizem que a raiz funciona como fallback quando não existe `skills/`, mas nem toda superfície que lista as habilidades de um plugin instalado enumera a partir dela — o sintoma é o plugin aparecer instalado e "sem habilidades ou agentes". `skills/<slug>/SKILL.md` funciona em todas.
+- **`references/` e `scripts/` vão junto do `SKILL.md`, dentro da pasta da skill.** Os caminhos que o `SKILL.md` documenta (`scripts/buscar_notas.py`) são relativos a ele. Se o `SKILL.md` desce um nível e as pastas ficam para trás, todo comando documentado aponta para o lugar errado.
 - **Nada de `../` dentro do plugin.** Na instalação a pasta é copiada isolada para o cache; caminho para fora dela não existe no destino. Se dois plugins precisam do mesmo arquivo, duplique ou use symlink.
+
+O `name:` do frontmatter também é obrigatório: sem ele o Claude Code usa o nome do diretório de instalação, que para plugin vindo de marketplace é uma string de versão que muda a cada update — a skill troca de nome sozinha.
 
 ## Fluxo: criar um plugin novo
 
@@ -41,7 +45,7 @@ python plugins/marketplace-manager/scripts/novo_plugin.py \
   --com scripts references
 ```
 
-O script cria a pasta a partir de `templates/`, já com `plugin.json` e `SKILL.md` válidos, e roda a sincronização no fim. Depois disso só falta escrever o conteúdo real do `SKILL.md`.
+O script cria a pasta a partir de `templates/`, já no layout `skills/<slug>/`, com `plugin.json` e `SKILL.md` válidos, e roda a sincronização no fim. Depois disso só falta escrever o conteúdo real do `SKILL.md`.
 
 O `description` do frontmatter é o que decide se a skill é ativada — escreva os gatilhos reais (frases que o Victor diria), não um resumo genérico do que o plugin faz. Compare com o `cerebro-memoria`: ele lista as frases literais de guardar e de recuperar.
 
