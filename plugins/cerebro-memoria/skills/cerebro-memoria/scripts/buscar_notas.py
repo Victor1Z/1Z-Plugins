@@ -2,13 +2,17 @@
 """
 Busca notas no vault do Cérebro (Obsidian) por frontmatter e/ou texto livre.
 Sem dependências externas (não requer PyYAML) para funcionar em qualquer
-Python 3 padrão na máquina do Victor.
+Python 3 padrão.
+
+O vault vem de configurar_vault.py (config do usuário) ou de --vault, que
+sobrescreve. Veja vault_config.py para a ordem de precedência.
 
 Uso:
-    python buscar_notas.py --vault "C:\\Users\\Usuario\\Documents\\Obsidian\\Cerebro" --query "sistema financeiro"
-    python buscar_notas.py --vault "..." --tipo decisao_tecnica --projeto "Sistema Financeiro"
-    python buscar_notas.py --vault "..." --tag sap --tag idoc
-    python buscar_notas.py --vault "..." --pasta "01 - Projetos"
+    python buscar_notas.py --query "sistema financeiro"
+    python buscar_notas.py --tipo decisao_tecnica --projeto "Sistema Financeiro"
+    python buscar_notas.py --tag sap --tag idoc
+    python buscar_notas.py --pasta "01 - Projetos"
+    python buscar_notas.py --vault "D:\\Obsidian\\Outro" --query "..."  # vault avulso
 
 Sem nenhum filtro, retorna todas as notas do vault (inventário geral).
 Saída sempre em JSON.
@@ -18,6 +22,10 @@ import json
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from vault_config import exigir_vault, saida_utf8  # noqa: E402
 
 FRONTMATTER_RE = re.compile(r'^---\s*\n(.*?)\n---\s*\n?', re.DOTALL)
 
@@ -150,8 +158,9 @@ def snippet(note, query, width=160):
 
 
 def main():
+    saida_utf8()
     ap = argparse.ArgumentParser(description='Busca notas no vault Cérebro')
-    ap.add_argument('--vault', required=True, help='Caminho do vault do Obsidian')
+    ap.add_argument('--vault', default='', help='Caminho do vault do Obsidian (padrão: o configurado)')
     ap.add_argument('--query', default='', help='Texto livre a buscar em qualquer parte da nota')
     ap.add_argument('--tipo', default='', help='Filtra pelo campo "tipo" do frontmatter')
     ap.add_argument('--projeto', default='', help='Filtra pelo campo "projeto" do frontmatter (substring)')
@@ -160,10 +169,7 @@ def main():
     ap.add_argument('--limit', type=int, default=25)
     args = ap.parse_args()
 
-    vault = Path(args.vault)
-    if not vault.exists():
-        print(json.dumps({'erro': f'Vault não encontrado em {vault}'}, ensure_ascii=False))
-        sys.exit(1)
+    vault = exigir_vault(args.vault, formato='json')
 
     notes = load_notes(vault)
 

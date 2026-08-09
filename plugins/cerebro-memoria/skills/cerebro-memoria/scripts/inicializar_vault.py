@@ -5,11 +5,20 @@ _config/config.md com valores padrão conservadores.
 
 Não apaga nem sobrescreve nada — é seguro rodar mais de uma vez.
 
+O vault vem de configurar_vault.py (config do usuário) ou de --vault, que
+sobrescreve. Veja vault_config.py para a ordem de precedência.
+
 Uso:
-    python inicializar_vault.py --vault "C:\\Users\\Usuario\\Documents\\Obsidian\\Cerebro"
+    python inicializar_vault.py
+    python inicializar_vault.py --vault "D:\\Obsidian\\Cerebro"
 """
 import argparse
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from vault_config import exigir_vault, saida_utf8  # noqa: E402
 
 PASTAS = [
     "00 - Inbox",
@@ -59,11 +68,13 @@ cada tarefa relevante.
 
 
 def main():
+    saida_utf8()
     ap = argparse.ArgumentParser(description='Inicializa a estrutura do vault Cérebro')
-    ap.add_argument('--vault', required=True, help='Caminho do vault do Obsidian')
+    ap.add_argument('--vault', default='', help='Caminho do vault do Obsidian (padrão: o configurado)')
     args = ap.parse_args()
 
-    vault = Path(args.vault)
+    # exigir_existente=False: criar a pasta é justamente a função deste script.
+    vault = exigir_vault(args.vault, exigir_existente=False)
     vault.mkdir(parents=True, exist_ok=True)
 
     criadas = []

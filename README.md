@@ -4,7 +4,7 @@ Marketplace pessoal de plugins do Claude Code. Cada plugin fica em `plugins/<slu
 
 ## Plugins
 
-- **cerebro-memoria** — memória persistente em Obsidian, com o vault como única fonte de verdade.
+- **cerebro-memoria** — memória persistente em Obsidian, com o vault como única fonte de verdade. Cada pessoa configura o caminho do próprio vault uma vez (`configurar_vault.py`).
 - **marketplace-manager** — cria, valida e registra os plugins deste repositório.
 
 ## Instalar

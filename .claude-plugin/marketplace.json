@@ -10,8 +10,8 @@
       "name": "cerebro-memoria",
       "source": "./plugins/cerebro-memoria",
       "displayName": "Cérebro Memória",
-      "description": "Memória persistente pessoal em Obsidian, usando o vault como única fonte de verdade (sem banco vetorial, sem SQLite).",
-      "version": "1.1.0",
+      "description": "Memória persistente pessoal em Obsidian, usando o vault como única fonte de verdade (sem banco vetorial, sem SQLite). O caminho do vault é configurado uma vez por máquina.",
+      "version": "1.2.0",
       "author": {
         "name": "Victor Both"
       },
