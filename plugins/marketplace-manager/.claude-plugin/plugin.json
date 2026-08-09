@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "marketplace-manager",
+  "displayName": "Marketplace Manager",
+  "description": "Cria, valida e registra os plugins deste marketplace, mantendo o .claude-plugin/marketplace.json sempre derivado dos manifestos reais.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Victor Both"
+  },
+  "keywords": [
+    "marketplace",
+    "plugin",
+    "scaffold",
+    "validacao"
+  ]
+}

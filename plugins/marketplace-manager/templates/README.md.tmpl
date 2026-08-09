@@ -1,0 +1,27 @@
+# {{DISPLAY}}
+
+{{DESCRICAO}}
+
+## Estrutura
+
+- `.claude-plugin/plugin.json` — metadados do plugin (fonte de verdade do catálogo).
+- `SKILL.md` — instruções e gatilhos de ativação da skill.
+
+## Instalar localmente
+
+```shell
+/plugin marketplace add .
+/plugin install {{NOME}}@1z-plugins
+```
+
+A skill fica disponível como `/{{NOME}}:{{NOME}}`.
+
+## Publicar alterações
+
+Bumpe `version` no `.claude-plugin/plugin.json` e rode:
+
+```bash
+python plugins/marketplace-manager/scripts/sincronizar_marketplace.py
+```
+
+Sem bumpar a versão, quem já instalou não recebe a atualização.
