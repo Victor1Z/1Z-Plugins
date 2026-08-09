@@ -1,0 +1,13 @@
+[
+  {
+     id: cerebro-memoria,
+    name: Cérebro Memória,
+    description: Plugin de memória persistente pessoal em Obsidian,
+    version: 1.0.0,
+    author: Victor,
+    path: plugins/cerebro-memoria,
+    entry: SKILL.md,
+    package: cerebro-memoria.skill,
+    tags: [memória, obsidian, vault, plugin]
+  }
+]
