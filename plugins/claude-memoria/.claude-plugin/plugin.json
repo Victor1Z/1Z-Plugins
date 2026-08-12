@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "claude-memoria",
+  "displayName": "Claude Memória",
+  "description": "Memória persistente pessoal em Obsidian, usando o vault como única fonte de verdade (sem banco vetorial, sem SQLite). Duas skills: memória geral e gestão de projetos, demandas (ATD) e conhecimento. O caminho do vault é configurado uma vez por máquina.",
+  "version": "2.1.0",
+  "author": {
+    "name": "Victor Both"
+  },
+  "keywords": [
+    "memoria",
+    "obsidian",
+    "vault",
+    "projetos",
+    "demandas",
+    "analise"
+  ]
+}

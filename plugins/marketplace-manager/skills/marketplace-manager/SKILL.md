@@ -47,7 +47,7 @@ python plugins/marketplace-manager/scripts/novo_plugin.py \
 
 O script cria a pasta a partir de `templates/`, já no layout `skills/<slug>/`, com `plugin.json` e `SKILL.md` válidos, e roda a sincronização no fim. Depois disso só falta escrever o conteúdo real do `SKILL.md`.
 
-O `description` do frontmatter é o que decide se a skill é ativada — escreva os gatilhos reais (frases que o Victor diria), não um resumo genérico do que o plugin faz. Compare com o `cerebro-memoria`: ele lista as frases literais de guardar e de recuperar.
+O `description` do frontmatter é o que decide se a skill é ativada — escreva os gatilhos reais (frases que o Victor diria), não um resumo genérico do que o plugin faz. Compare com o `claude-memoria`: ele lista as frases literais de guardar e de recuperar.
 
 ## Fluxo: registrar / atualizar o catálogo
 
@@ -67,12 +67,12 @@ Se o script reclamar de um plugin, ele não entra no catálogo — a mensagem di
 
 ```shell
 /plugin marketplace add .
-/plugin install cerebro-memoria@1z-plugins
+/plugin install claude-memoria@1z-plugins
 ```
 
 O `marketplace add` aponta para a raiz do repositório (onde está `.claude-plugin/`), não para `plugins/`. Depois de instalar, se a saída pedir, rode `/reload-plugins`.
 
-Skills de plugin ficam com namespace: a skill `cerebro-memoria` do plugin `cerebro-memoria` é invocada como `/cerebro-memoria:cerebro-memoria`.
+Skills de plugin ficam com namespace: a skill `claude-memoria` do plugin `claude-memoria` é invocada como `/claude-memoria:claude-memoria`.
 
 Para validar antes de publicar:
 
