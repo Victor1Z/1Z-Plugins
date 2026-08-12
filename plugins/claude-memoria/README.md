@@ -87,13 +87,15 @@ A detecção via Obsidian só **sugere** candidatos; ela nunca escolhe sozinha. 
 ├── projeto.md                  contexto permanente do sistema
 └── demandas/ATD-000000.md      uma nota por atendimento
 02 - Trabalho/                  Reuniões/, Documentação/
-03 - Conhecimento/              Programação, SAP, .NET, React, Git, DevOps, Outros
+03 - Conhecimento/              boas práticas do time: Programação, Arquitetura, Outros
 05 - Empresas/                  uma nota por fornecedor/cliente
 99 - Arquivo/                   encerrado, fora do fluxo ativo
 _config/config.md               comportamento das skills
 ```
 
 Essa é a organização definitiva — o que não se encaixa vai para `00 - Inbox/`, não para uma categoria nova.
+
+Antes de cair no Inbox, porém, a skill **pergunta**: se você mandar guardar algo e não der para decidir de que projeto é, que tipo de nota é, ou se já existe nota do mesmo assunto, ela junta as dúvidas numa pergunta só (com as opções que a busca encontrou) em vez de chutar uma pasta. O Inbox é o destino de quando a pergunta não resolve — não um atalho para não perguntar.
 
 Notas de projeto no formato antigo (arquivo solto em `01 - Projetos/`) continuam válidas e a busca continua achando; a conversão para o formato pasta é oferecida, nunca automática.
 

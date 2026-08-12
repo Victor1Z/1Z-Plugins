@@ -2,9 +2,13 @@
 
 O template literal — o arquivo que `nova_demanda.py` copia e que define a estrutura obrigatória — é `demanda.template.md`, nesta mesma pasta. Leia ele para ver as 15 seções na ordem. Este documento explica **como preenchê-las** sem transformar suposição em fato.
 
-O template é a fonte de verdade da estrutura. Não simplifique, não remova seções, não invente uma estrutura alternativa. Seção sem informação continua presente, com `Não identificado` — uma seção ausente é indistinguível de uma seção esquecida, e é exatamente o que precisa ficar visível para o Victor saber o que ainda falta levantar.
+O template é a fonte de verdade da estrutura. Não simplifique, não remova seções, não invente uma estrutura alternativa. Seção sem informação continua presente, com `Não identificado` — uma seção ausente é indistinguível de uma seção esquecida, e é exatamente o que precisa ficar visível para o usuário saber o que ainda falta levantar.
 
-Se o Victor fornecer uma versão mais nova do template, ela substitui `demanda.template.md`.
+Os campos são **ponto de partida, não camisa de força**: o analista pode acrescentar campos, colunas ou seções quando a demanda pedir. A assimetria é intencional — acrescentar melhora o documento, remover apaga a evidência de que faltava algo.
+
+E a demanda é **documento vivo**: ela é atualizada conforme a análise avança, não preenchida uma vez e congelada. Resposta que chega depois entra na seção correspondente e a mudança vira linha na seção 15.
+
+Se o usuário fornecer uma versão mais nova do template, ela substitui `demanda.template.md`.
 
 ## As três marcações que sustentam o documento
 
@@ -16,7 +20,7 @@ Se o Victor fornecer uma versão mais nova do template, ela substitui `demanda.t
 
 Um campo preenchido com suposição apresentada como fato é pior que um campo vazio: ninguém volta para revisá-lo. É assim que uma spec chega ao desenvolvedor com uma regra de negócio que nunca existiu.
 
-Tudo que for `Presumido`, `a validar` ou `Não identificado` deveria ter um item correspondente na seção 14 (Dúvidas e gaps em aberto). É essa seção que o Victor leva para a conversa com o solicitante.
+Tudo que for `Presumido`, `a validar` ou `Não identificado` deveria ter um item correspondente na seção 14 (Dúvidas e gaps em aberto). É essa seção que o usuário leva para a conversa com o solicitante.
 
 ## Rastreabilidade entre os IDs
 
@@ -33,9 +37,21 @@ RF-01 ──> CU-01 ──> CA-01
 
 Requisito que ficou sem caso de uso é um de dois problemas: ou não era requisito (era desejo, contexto ou solução), ou falta levantamento. Nos dois casos vira item da seção 14 — não invente um caso de uso só para a tabela fechar.
 
+## Consistência interna
+
+Rastreabilidade garante que as tabelas fecham; consistência garante que o conteúdo não se contradiz. Três verificações antes de entregar:
+
+| Verificação | O que procurar |
+| --- | --- |
+| Regras não conflitam | Duas RN que dão respostas diferentes para o mesmo caso (ex: RN-02 bloqueia proposta vencida, RN-05 permite reprocessar proposta vencida). |
+| Casos de uso coerentes | CU que pressupõe estado que outro CU torna impossível; dois CU cobrindo o mesmo fluxo com regras diferentes. |
+| Termos consistentes | Mesmo conceito com nomes diferentes ao longo do documento ("proposta", "contrato", "operação"). Escolha um termo e use em todas as seções. Se o solicitante usa outro, registre o sinônimo na seção 14 — ou acrescente um glossário à demanda, que é um caso legítimo de campo novo. |
+
+Conflito não se resolve por conta própria escolhendo o lado mais provável: as duas versões vão para a seção 14, escritas, para o solicitante decidir.
+
 ## Seção por seção, o que costuma sair errado
 
-**1. Problema** — a maioria das demandas chega já como solução ("criar um botão de exportar"). O problema é o que está atrás disso ("o time exporta manualmente e leva 2h por semana"). Se você só souber a solução, escreva-a e registre na seção 14 que o problema real não foi confirmado.
+**1. Problema** — a maioria das demandas chega já como solução ("criar um botão de exportar"). O problema é o que está atrás disso ("o time exporta manualmente e leva 2h por semana"). Quando o que vier for solução, **redirecione para o problema** antes de escrever: *"o que acontece hoje que faz isso ser necessário?"*. Se ainda assim só houver a solução, escreva-a como solução proposta e registre na seção 14 que o problema real não foi confirmado — não fabrique uma justificativa plausível para preencher a seção.
 
 **2. Objetivo** — precisa dizer como saberemos que foi resolvido. "Melhorar o processo" não é objetivo; "reduzir o fechamento de 2h para minutos" é.
 

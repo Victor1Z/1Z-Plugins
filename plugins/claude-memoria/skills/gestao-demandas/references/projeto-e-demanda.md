@@ -58,15 +58,18 @@ Nunca `decisao-1.md`, `decisao-2.md`, `decisao-3.md`. O contexto de uma demanda 
 
 Decisão que vale para o sistema inteiro (não só para esta demanda) sobe para `## Decisões` do `projeto.md`, com a data.
 
-## 7. Conhecimento reutilizável sai da demanda
+## 7. Boa prática de desenvolvimento sai da demanda
 
-Teste: *"isso ainda seria útil se este projeto deixasse de existir?"*
+`03 - Conhecimento/` é a base de boas práticas do time — conceito de programação (`Programação/`) e conceito de arquitetura de software (`Arquitetura/`). Dois testes, os dois precisam passar: *"isso ainda seria útil se este projeto deixasse de existir?"* e *"isso orienta como a gente constrói?"*.
 
-- "Como configurar autenticação JWT num serviço .NET" → sim → `03 - Conhecimento/.NET/Configuração de autenticação JWT.md`, e a demanda linka `[[Configuração de autenticação JWT]]`.
-- "O endpoint de propostas exige o header X-Origem" → não, é do Hub de Crédito → vai para o `projeto.md`.
+- "Autenticação entre serviços internos é JWT com claim de origem; chave em cofre, nunca em appsettings" → sim → `03 - Conhecimento/Arquitetura/Autenticação entre serviços.md`, e a demanda linka `[[Autenticação entre serviços]]`.
+- "Erro de integração é retornado como Result, não exceção" → sim → `03 - Conhecimento/Programação/`.
+- "O endpoint de propostas exige o header X-Origem" → não, é do Hub de Crédito → `projeto.md`.
 - "Nesta demanda decidimos usar cache de 5 minutos" → não → fica na demanda.
+- "O pipeline roda o deploy na branch release" → não é boa prática de código → `02 - Trabalho/Documentação/`.
+- "Proposta vencida não pode ser reprocessada" → regra de negócio → `projeto.md` ou demanda.
 
-Conhecimento preso dentro de uma demanda é conhecimento perdido: ninguém procura solução de JWT dentro da ATD-282471.
+Boa prática presa dentro de uma demanda é boa prática perdida: ninguém procura o padrão de autenticação do time dentro da ATD-282471.
 
 ## 8. Empresa é nota própria, não parágrafo repetido
 
@@ -81,19 +84,19 @@ Antes de qualquer arquivo novo: verifique se já existe; verifique se existe inf
 - um projeto → uma `projeto.md`
 - uma demanda → uma nota por ATD
 - uma empresa → uma nota
-- conhecimento → uma nota por assunto reutilizável
+- boa prática → uma nota por prática, não uma por vez que ela foi aplicada
 
 ## 10. O que é permanente vira nota; o que é do momento, não
 
 - "Estou verificando essa API agora" → temporário, não registre.
 - "O Hub de Crédito usa a API X para consultar propostas" → permanente → `projeto.md`.
-- "Para configurar o serviço .NET assim, precisa daquela config" → reutilizável → `03 - Conhecimento/.NET/`.
+- "Serviço novo nasce com health check e log estruturado" → boa prática do time → `03 - Conhecimento/Arquitetura/`.
 
 Registrar o temporário polui a base com frases que ninguém consegue interpretar duas semanas depois.
 
-## 11. Sem classificação clara → `00 - Inbox/`
+## 11. Sem classificação clara → perguntar; se continuar sem resposta → `00 - Inbox/`
 
-Não force uma pasta e não invente categoria nova de primeiro nível. `00 - Inbox/AAAA-MM-DD - descrição curta.md` e triagem depois.
+Antes de mandar para o Inbox, pergunte o que falta para classificar (é de qual projeto? tem ATD? é conhecimento reaproveitável?) — numa mensagem só, com as opções que a busca já levantou. Só quando a pergunta não resolve é que vai para `00 - Inbox/AAAA-MM-DD - descrição curta.md` e triagem depois. Não force uma pasta e não invente categoria nova de primeiro nível.
 
 Errar por cautela aqui é barato. Uma nota mal classificada é cara: ninguém mais a encontra, e ela é redigitada do zero meses depois.
 

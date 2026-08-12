@@ -93,31 +93,43 @@ tags:
 - Demanda: [[ATD-000000]]
 ```
 
-## Conhecimento técnico — `03 - Conhecimento/<Área>/Título.md`
+## Boa prática de desenvolvimento — `03 - Conhecimento/Programação|Arquitetura|Outros/Título.md`
 
-Use quando a informação **não depende** de um projeto específico. O teste: *"isso ainda seria útil se aquele projeto deixasse de existir?"*.
+Use para **boa prática adotada pelo time**: conceito de programação ou conceito de arquitetura de software, que serve de base ao construir funcionalidade nova. Dois testes, os dois precisam passar: *"isso ainda seria útil se aquele projeto deixasse de existir?"* e *"isso orienta como a gente constrói?"*.
+
+Não use para DevOps/infraestrutura (`02 - Trabalho/Documentação/`) nem para regra de negócio (`projeto.md` ou demanda).
 
 ```markdown
 ---
 tipo: conhecimento
-area:
-tecnologia:
+area: programacao        # programacao | arquitetura | outros
+tecnologia:              # dotnet, react, sap... vazio quando vale para qualquer stack
 tags:
   -
 ---
 
 # Título
 
-## Significado
+## Prática
 
-## Quando ocorre / quando se aplica
+O que o time faz. Uma ou duas frases, na forma de orientação.
 
-## Problemas comuns
+## Por quê
+
+O problema que essa prática evita. Sem isso, ela vira regra sem dono e o próximo dev a contorna.
+
+## Como aplicar
+
+## Quando não se aplica
+
+Exceções conhecidas. Prática sem limite declarado é aplicada onde não deveria.
 
 ## Exemplos
 
 ## Referências
 ```
+
+`area` e `tecnologia` são campos de frontmatter, então `buscar_notas.py --query`, `--tag` e `--pasta` continuam achando. Tecnologia é tag/campo, não pasta: a mesma prática costuma valer em mais de um stack.
 
 ## Empresa — `05 - Empresas/Nome.md`
 
@@ -190,8 +202,14 @@ origem: conversa-claude
 
 # Descrição curta
 
-Conteúdo capturado, o mais fiel possível ao que o Victor disse.
+Conteúdo capturado, o mais fiel possível ao que o usuário disse.
+
+## Em aberto
+
+O que faltou para classificar — a pergunta que ficou sem resposta (ex: "de qual sistema é isso?", "tem ATD?"). Quem triar depois começa por aqui em vez de reconstruir a dúvida.
 ```
+
+A seção `## Em aberto` só existe quando o item caiu no Inbox por falta de resposta. Se o usuário pediu explicitamente para só jogar no Inbox, o item entra sem ela.
 
 ## Tipos que não têm mais template próprio
 

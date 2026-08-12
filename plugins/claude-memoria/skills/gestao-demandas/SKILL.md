@@ -9,7 +9,7 @@ description: Organiza projetos, demandas (ATD), conhecimento técnico e empresas
 
 Três coisas diferentes, que o vault mantém separadas de propósito:
 
-> **Projeto** é onde o sistema existe. **Demanda** é o que será alterado nele. **Conhecimento** é o que pode ser reutilizado em outros lugares.
+> **Projeto** é onde o sistema existe. **Demanda** é o que será alterado nele. **Conhecimento** é a boa prática de desenvolvimento que orienta como a próxima funcionalidade é construída.
 
 Confundir os três é o jeito mais rápido de degradar a base. Uma demanda tratada como projeto vira uma cópia da arquitetura inteira que envelhece sozinha; conhecimento preso dentro de uma demanda nunca é achado de novo quando outro projeto precisa dele.
 
@@ -39,7 +39,7 @@ Uma análise iniciada sem pedido custa caro nos dois sentidos: gera um documento
 02 - Trabalho/
 ├── Reuniões/
 └── Documentação/
-03 - Conhecimento/              ← Programação, SAP, .NET, React, Git, DevOps, Outros
+03 - Conhecimento/              ← boas práticas do time: Programação, Arquitetura, Outros
 05 - Empresas/                  ← uma nota por empresa/fornecedor/cliente
 99 - Arquivo/                   ← encerrado, fora do fluxo ativo
 _config/config.md
@@ -73,7 +73,7 @@ Seis dígitos, com o hífen. `ATD-282471` é o identificador único da demanda �
 
 **Se a pessoa pedir para criar uma demanda sem informar o número, peça o número.** Não invente, não use placeholder, não crie com `ATD-000000` "para preencher depois". Um número inventado vira o identificador de verdade em minutos e ninguém consegue mais cruzar com o Agidesk.
 
-A demanda vive em `01 - Projetos/<Projeto>/demandas/ATD-282471.md` e segue o template literal de `${CLAUDE_PLUGIN_ROOT}/skills/gestao-demandas/references/demanda.template.md` — 15 seções, com IDs rastreáveis (RF, RNF, RN, CU, CA). Essa é a fonte de verdade da estrutura: não simplifique, não remova seções, não invente uma alternativa. Se o Victor fornecer uma versão mais nova do template, ela substitui esse arquivo.
+A demanda vive em `01 - Projetos/<Projeto>/demandas/ATD-282471.md` e segue o template literal de `${CLAUDE_PLUGIN_ROOT}/skills/gestao-demandas/references/demanda.template.md` — 15 seções, com IDs rastreáveis (RF, RNF, RN, CU, CA). Essa é a fonte de verdade da estrutura: não simplifique, não remova seções, não invente uma alternativa. Se o usuário fornecer uma versão mais nova do template, ela substitui esse arquivo.
 
 Como preencher cada seção sem transformar suposição em fato: `${CLAUDE_PLUGIN_ROOT}/skills/gestao-demandas/references/preenchimento-demanda.md`. Leia antes de preencher a primeira demanda da conversa.
 
@@ -116,7 +116,9 @@ Use `[[link]]` também para empresas (`[[Sinqia]]`) e conhecimento (`[[Autentica
 
 ## Conhecimento e empresas
 
-Se algo descoberto durante uma demanda **serve para outros projetos**, ele não pertence à demanda: vira nota em `03 - Conhecimento/<Área>/`, e a demanda referencia com `[[...]]`. O teste é simples — "isso ainda seria útil se este projeto deixasse de existir?". Se sim, é conhecimento.
+Se algo descoberto durante uma demanda **serve para outros projetos e orienta como o time constrói**, ele não pertence à demanda: vira nota em `03 - Conhecimento/Programação/` ou `03 - Conhecimento/Arquitetura/`, e a demanda referencia com `[[...]]`.
+
+`03 - Conhecimento/` é a base de **boas práticas de desenvolvimento**: conceito de programação e conceito de arquitetura de software. Dois testes, os dois precisam passar — *"isso ainda seria útil se este projeto deixasse de existir?"* e *"isso orienta como a gente constrói?"*. DevOps, infraestrutura e comando de ferramenta vão para `02 - Trabalho/Documentação/`; regra de negócio e processo ficam no `projeto.md` ou na demanda.
 
 Empresas, fornecedores e clientes relevantes têm uma nota em `05 - Empresas/` (o que fornecem, sistemas, integrações, APIs, contatos, problemas conhecidos, projetos relacionados). Projetos e demandas linkam para ela em vez de repetir o mesmo parágrafo sobre o fornecedor em cada nota.
 
@@ -133,9 +135,25 @@ Antes de criar **qualquer** arquivo: procure se já existe, procure se existe in
 
 E decisões tomadas durante uma demanda ficam **dentro da demanda**, na seção de decisões. Nunca `decisao-1.md`, `decisao-2.md` — o contexto da demanda tem que ficar num lugar só.
 
+## Guardrails da análise
+
+Valem em qualquer etapa, e valem contra a tentação de entregar um documento completo:
+
+- **Nunca inventar requisito ou regra de negócio.** O que não foi informado é gap na seção 14, não texto na seção 5 ou 6.
+- **Não assumir sistemas envolvidos.** Pergunte quais sistemas a alteração toca.
+- **Solução não é problema.** Se o analista descrever a solução, redirecione para o problema antes de escrever a seção 1.
+- **A demanda é documento vivo.** Atualize conforme a análise avança; cada atualização vira linha na seção 15.
+- **Os campos são ponto de partida, não camisa de força.** Acrescentar campo/seção quando a demanda pedir: sim. Remover seção do template: não.
+
+Detalhamento e a checagem de consistência: `${CLAUDE_PLUGIN_ROOT}/skills/gestao-demandas/references/fluxo-analise.md`.
+
+## Tom
+
+Objetiva, frase curta, sem preâmbulo. Sem repetir o que o analista disse, sem "conforme solicitado" / "vale destacar que". Pergunta direta — *"Quais sistemas?"*, não a versão de três linhas. Uma ideia por item. Tabela quando couber, Mermaid quando for fluxo ou dependência. Documento começa pelo conteúdo. O analista sabe avaliar: entregue o conteúdo, não a argumentação.
+
 ## Comportamento durante conversas normais
 
-Quando o Victor falar sobre uma demanda, projeto ou assunto técnico sem pedir nada explícito:
+Quando o usuário falar sobre uma demanda, projeto ou assunto técnico sem pedir nada explícito:
 
 - use o contexto que já existe no vault, se ajudar a responder;
 - **não** inicie análise;
@@ -182,4 +200,4 @@ python "${CLAUDE_PLUGIN_ROOT}/skills/claude-memoria/scripts/buscar_notas.py" --p
 
 ## O que esta skill não faz
 
-Não apaga notas, não move projeto para `99 - Arquivo` sem pedido, não converte projetos do formato antigo por conta própria, e não preenche seção de demanda com suposição apresentada como fato. Requisito presumido é marcado como **Presumido** na coluna própria do template; origem de regra não confirmada é **a validar**. Essa marcação é o que permite ao Victor levar o documento para o solicitante sabendo exatamente o que precisa ser confirmado.
+Não apaga notas, não move projeto para `99 - Arquivo` sem pedido, não converte projetos do formato antigo por conta própria, e não preenche seção de demanda com suposição apresentada como fato. Requisito presumido é marcado como **Presumido** na coluna própria do template; origem de regra não confirmada é **a validar**. Essa marcação é o que permite ao usuário levar o documento para o solicitante sabendo exatamente o que precisa ser confirmado.

@@ -29,12 +29,11 @@ PASTAS = [
     "01 - Projetos",
     "02 - Trabalho/Reuniões",
     "02 - Trabalho/Documentação",
+    # "03 - Conhecimento" e boa pratica de desenvolvimento: conceito de
+    # programacao e conceito de arquitetura de software. Nao entra DevOps,
+    # infraestrutura nem conhecimento de negocio.
     "03 - Conhecimento/Programação",
-    "03 - Conhecimento/SAP",
-    "03 - Conhecimento/.NET",
-    "03 - Conhecimento/React",
-    "03 - Conhecimento/Git",
-    "03 - Conhecimento/DevOps",
+    "03 - Conhecimento/Arquitetura",
     "03 - Conhecimento/Outros",
     "05 - Empresas",
     "99 - Arquivo",

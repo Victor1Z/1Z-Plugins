@@ -220,7 +220,7 @@ def main():
     ap.add_argument("--titulo", default="", help="nome curto da demanda")
     ap.add_argument("--tipo", default="Melhoria", help="Melhoria / Projeto / Sustentação")
     ap.add_argument("--solicitante", default="")
-    ap.add_argument("--analista", default="Victor")
+    ap.add_argument("--analista", default="", help="quem esta conduzindo a analise")
     ap.add_argument("--sistemas", default="", help="sistemas envolvidos, texto livre")
     ap.add_argument("--agidesk", default="", help="numero do chamado, se diferente do ATD")
     ap.add_argument("--status", default="Rascunho")
@@ -247,7 +247,7 @@ def main():
             "erro": f"O projeto '{candidatos[0]}' existe como nota solta "
                     f"({PROJETOS}/{candidatos[0]}.md), formato anterior a esta skill.",
             "sugestao": f"Converta para {PROJETOS}/{candidatos[0]}/projeto.md antes de "
-                        "criar demandas nele. Nao faca isso sem confirmar com o Victor.",
+                        "criar demandas nele. Nao faca isso sem confirmar com o usuario.",
         }, 1)
 
     if pasta is None:

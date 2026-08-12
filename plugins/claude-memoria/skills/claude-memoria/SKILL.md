@@ -59,17 +59,42 @@ Leia esse arquivo mentalmente no início de cada tarefa relevante e respeite os 
 
 Quando o usuário disparar um gatilho de persistência:
 
-1. **Classifique** o que está sendo dito: é contexto permanente de um projeto, algo específico de uma demanda (ATD), uma reunião, conhecimento técnico geral, informação sobre uma empresa/fornecedor, ou algo sem categoria clara ainda?
+1. **Classifique** o que está sendo dito: é contexto permanente de um projeto, algo específico de uma demanda (ATD), uma reunião, uma **boa prática de desenvolvimento** do time (`03 - Conhecimento/`), informação sobre uma empresa/fornecedor, ou algo sem categoria clara ainda?
 2. **Identifique o projeto/assunto relacionado**, se houver um. Se o que está sendo dito é sobre uma alteração num sistema com número de atendimento, o lugar é a demanda — veja a skill `gestao-demandas`.
 3. **Procure antes de criar.** Rode `${CLAUDE_PLUGIN_ROOT}/skills/claude-memoria/scripts/buscar_notas.py` filtrando por tipo/projeto/tags para ver se já existe uma nota sobre esse mesmo assunto. Isso é o passo mais importante do fluxo — pular ele é a causa nº 1 de vault bagunçado.
-4. **Decida atualizar vs. criar:**
+4. **Se a classificação não estiver clara, pergunte** — veja "Perguntar antes de classificar" logo abaixo. Palpite silencioso e Inbox por preguiça são as duas formas de perder a informação.
+5. **Decida atualizar vs. criar:**
    - Achou uma nota que claramente é sobre o mesmo projeto/assunto → **atualize** ela (veja "preservar histórico" abaixo). Nunca crie `Sistema Financeiro - Docker.md`, `Sistema Financeiro - API.md` etc. quando já existe `Sistema Financeiro.md` — tudo isso é uma seção dentro da nota do projeto, não notas separadas.
    - Não achou nada e a classificação está clara → **crie** a nota usando o template correspondente (`${CLAUDE_PLUGIN_ROOT}/skills/claude-memoria/references/templates.md`).
-   - Não tem certeza de projeto/categoria → **vai para o Inbox** (`00 - Inbox/AAAA-MM-DD - descrição curta.md`), sem tentar forçar uma classificação. É mais fácil organizar depois do que desfazer uma classificação errada.
+   - Continua sem classificação depois de perguntar (a pessoa não sabe, não quis responder ou pediu para só guardar) → **vai para o Inbox** (`00 - Inbox/AAAA-MM-DD - descrição curta.md`), sem tentar forçar uma classificação. É mais fácil organizar depois do que desfazer uma classificação errada.
    - Se o match com um projeto existente não for óbvio (nome parecido mas não idêntico), **pergunte** em vez de assumir — a menos que `confirm_new_project: false` na config.
-5. **Preserve histórico.** Ao atualizar uma nota, não sobrescreva informação antiga — adicione à seção `## Histórico` com a data, e só então atualize o corpo principal se o fato mudou (ex: decisão trocada). Um exemplo do padrão está em `${CLAUDE_PLUGIN_ROOT}/skills/claude-memoria/references/regras.md`.
-6. **Registre a data certa.** Distinga a data do evento (quando aconteceu) da data de criação da nota e da última atualização — os três campos existem no frontmatter por esse motivo.
-7. **Confirme de forma breve** o que foi salvo e onde (uma ou duas linhas — "Registrado no Sistema Financeiro: decisão de usar .NET 10 no backend"). Não é preciso pedir permissão para escrever a nota em si; escrever no vault é a função do skill.
+6. **Preserve histórico.** Ao atualizar uma nota, não sobrescreva informação antiga — adicione à seção `## Histórico` com a data, e só então atualize o corpo principal se o fato mudou (ex: decisão trocada). Um exemplo do padrão está em `${CLAUDE_PLUGIN_ROOT}/skills/claude-memoria/references/regras.md`.
+7. **Registre a data certa.** Distinga a data do evento (quando aconteceu) da data de criação da nota e da última atualização — os três campos existem no frontmatter por esse motivo.
+8. **Confirme de forma breve** o que foi salvo e onde (uma ou duas linhas — "Registrado no Sistema Financeiro: decisão de usar .NET 10 no backend"). Não é preciso pedir permissão para escrever a nota em si; escrever no vault é a função do skill.
+
+### Perguntar antes de classificar
+
+Escrever no vault não precisa de permissão, mas **classificar sem base precisa de pergunta**. Quando o pedido for para guardar algo e você não tiver o suficiente para decidir *o que* a informação é, pergunte antes de escrever — uma nota no lugar errado some do radar, e ninguém revisa uma classificação que já foi feita.
+
+Pergunte quando faltar algum destes:
+
+- **Que tipo de coisa é** — contexto de um sistema, uma alteração com atendimento (ATD), uma reunião, boa prática de desenvolvimento, ou informação sobre uma empresa/fornecedor. Para `03 - Conhecimento/`, os dois testes: *"isso ainda seria útil se aquele projeto deixasse de existir?"* e *"isso orienta como a gente constrói?"*.
+- **A que projeto/sistema pertence** — quando o texto cita um sistema mas sem nome, ou o nome citado não bate exatamente com nenhum projeto do vault, ou bate com mais de um.
+- **Se é o mesmo assunto de uma nota existente** — quando a busca do passo 3 devolveu candidatos parecidos e você não consegue afirmar que é o mesmo assunto.
+- **Quando o fato aconteceu** — só se a informação for datada (reunião, incidente, decisão tomada) e a data não der para inferir da conversa.
+
+Como perguntar:
+
+- Junte tudo numa mensagem só, com no máximo 2–3 perguntas objetivas. Não faça interrogatório em série a cada resposta.
+- Ofereça as opções concretas que você já levantou, inclusive o que a busca encontrou: *"Isso é sobre o `[[Hub de Crédito]]` que já existe no vault, ou é um sistema diferente?"* é melhor do que *"a que projeto isso pertence?"*.
+- Diga qual seria o seu palpite e o que ele implica, para a pessoa só confirmar: *"Ia registrar como boa prática em `03 - Conhecimento/Arquitetura`; se isso é específico de uma demanda, me diz o ATD que eu ponho lá."*
+- Nunca invente conteúdo para preencher o que faltou. A pergunta é sobre onde a informação mora, não sobre o que ela diz.
+
+Não pergunte quando:
+
+- A classificação já está evidente pela conversa — o assunto acabou de ser tratado, o ATD foi citado, o projeto é o mesmo da mensagem anterior.
+- A pessoa pediu explicitamente para só jogar no Inbox, ou já respondeu que não sabe. Aí é Inbox direto, com a descrição curta na data de hoje, e você avisa numa linha que ficou lá esperando triagem.
+- A dúvida é só de forma (nome do arquivo, qual seção da nota, ordem dos itens) — isso você resolve sozinho seguindo os templates.
 
 ## Fluxo 2 — recuperar contexto ("recall")
 
