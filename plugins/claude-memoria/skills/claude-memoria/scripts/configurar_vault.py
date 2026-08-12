@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Configura, uma vez por maquina, onde fica o vault do Cerebro.
+Configura, uma vez por maquina, onde fica o vault do Claude Memoria.
 
-A escolha e gravada em ~/.cerebro-memoria/config.json e passa a valer para todas
+A escolha e gravada em ~/.claude-memoria/config.json e passa a valer para todas
 as conversas -- os outros scripts do skill leem esse arquivo sozinhos, sem
 precisar de --vault. Fica fora do repositorio de proposito: e config da pessoa,
 nao do plugin, e nunca deve entrar num commit.
@@ -10,7 +10,7 @@ nao do plugin, e nunca deve entrar num commit.
 Uso:
     python configurar_vault.py                             # status atual + vaults detectados
     python configurar_vault.py --detectar                  # so os vaults do Obsidian local
-    python configurar_vault.py --vault "D:\\Obsidian\\Cerebro"
+    python configurar_vault.py --vault "D:\\Obsidian\\Vault"
     python configurar_vault.py --vault "..." --criar       # grava e cria a estrutura de pastas
     python configurar_vault.py --limpar                    # esquece a configuracao
 
@@ -38,7 +38,7 @@ from vault_config import (  # noqa: E402
 
 def _status() -> dict:
     vault, origem = resolver_vault()
-    return {
+    status = {
         "configurado": vault is not None,
         "vault": str(vault) if vault else None,
         "origem": origem,
@@ -46,6 +46,13 @@ def _status() -> dict:
         "arquivo_de_config": str(CONFIG_FILE),
         "variavel_de_ambiente": ENV_VAR,
     }
+    if origem.endswith("legado") or origem.endswith("legada"):
+        status["legado"] = (
+            "Caminho vindo da config do nome anterior do plugin (cerebro-memoria). "
+            "Continua funcionando; para migrar, regrave com "
+            '--vault "<caminho>".'
+        )
+    return status
 
 
 def _sair(payload: dict, codigo: int = 0):
@@ -56,7 +63,7 @@ def _sair(payload: dict, codigo: int = 0):
 def main():
     saida_utf8()
     ap = argparse.ArgumentParser(
-        description="Configura o caminho do vault do Cerebro para esta maquina",
+        description="Configura o caminho do vault do Claude Memoria para esta maquina",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     ap.add_argument("--vault", help="caminho do vault a gravar como padrao")

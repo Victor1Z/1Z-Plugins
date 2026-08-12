@@ -4,7 +4,7 @@ Marketplace pessoal de plugins do Claude Code. Cada plugin fica em `plugins/<slu
 
 ## Plugins
 
-- **cerebro-memoria** — memória persistente em Obsidian, com o vault como única fonte de verdade. Cada pessoa configura o caminho do próprio vault uma vez (`configurar_vault.py`).
+- **claude-memoria** — memória persistente em Obsidian, com o vault como única fonte de verdade. Cada pessoa configura o caminho do próprio vault uma vez (`configurar_vault.py`). Duas skills: `claude-memoria` (memória geral) e `gestao-demandas` (projetos, demandas ATD, conhecimento e o fluxo de análise).
 - **marketplace-manager** — cria, valida e registra os plugins deste repositório.
 
 ## Instalar
@@ -13,10 +13,10 @@ No Claude Code, a partir da raiz deste repositório:
 
 ```shell
 /plugin marketplace add .
-/plugin install cerebro-memoria@1z-plugins
+/plugin install claude-memoria@1z-plugins
 ```
 
-Se a saída da instalação pedir, rode `/reload-plugins`. As skills ficam com namespace do plugin — por exemplo `/cerebro-memoria:cerebro-memoria`.
+Se a saída da instalação pedir, rode `/reload-plugins`. As skills ficam com namespace do plugin — por exemplo `/claude-memoria:claude-memoria`.
 
 ## Adicionar um plugin
 

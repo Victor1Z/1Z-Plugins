@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Busca notas no vault do Cérebro (Obsidian) por frontmatter e/ou texto livre.
+Busca notas no vault do Claude Memória (Obsidian) por frontmatter e/ou texto livre.
 Sem dependências externas (não requer PyYAML) para funcionar em qualquer
 Python 3 padrão.
 
@@ -159,7 +159,7 @@ def snippet(note, query, width=160):
 
 def main():
     saida_utf8()
-    ap = argparse.ArgumentParser(description='Busca notas no vault Cérebro')
+    ap = argparse.ArgumentParser(description='Busca notas no vault Claude Memória')
     ap.add_argument('--vault', default='', help='Caminho do vault do Obsidian (padrão: o configurado)')
     ap.add_argument('--query', default='', help='Texto livre a buscar em qualquer parte da nota')
     ap.add_argument('--tipo', default='', help='Filtra pelo campo "tipo" do frontmatter')

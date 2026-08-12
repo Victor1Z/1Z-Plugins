@@ -1,14 +1,16 @@
-# Regras de organização do Cérebro
+# Regras de organização do Claude Memória
 
 Cada regra aqui existe para evitar um jeito específico do vault degradar com o tempo. Vale entender o motivo, não só seguir a lista.
 
 ## 1. Nunca criar uma nota de projeto sem antes procurar se já existe
 
-Sem essa checagem, é fácil acabar com `Sistema Financeiro.md`, `Gerenciamento Financeiro.md` e `Carteira de Investimentos.md` todas descrevendo a mesma coisa. Rode `buscar_notas.py --pasta "01 - Projetos"` (ou filtrando por `--tipo projeto`) antes de criar. Se o nome for parecido mas não idêntico ao que o Victor mencionou, pergunte antes de assumir que é outro projeto — a menos que a config diga para não confirmar.
+Sem essa checagem, é fácil acabar com `Sistema Financeiro/`, `Gerenciamento Financeiro/` e `Carteira de Investimentos/` todas descrevendo a mesma coisa. Rode `buscar_notas.py --pasta "01 - Projetos"` (ou filtrando por `--tipo projeto`) antes de criar. Se o nome for parecido mas não idêntico ao que o Victor mencionou, pergunte antes de assumir que é outro projeto — a menos que a config diga para não confirmar.
+
+Um projeto é uma pasta com `projeto.md` dentro (`01 - Projetos/<Projeto>/projeto.md`). Notas de projeto como arquivo solto são do formato antigo: continuam válidas, mas não crie novas assim.
 
 ## 2. Pesquisar entidades semelhantes antes de criar qualquer nota nova
 
-Vale para pessoas, empresas e conceitos também, não só projetos. Uma pessoa mencionada duas vezes com grafias levemente diferentes do nome não deveria virar duas notas.
+Vale para empresas e assuntos de conhecimento também, não só projetos. Uma empresa mencionada duas vezes com grafias levemente diferentes do nome não deveria virar duas notas.
 
 ## 3. Gatilhos explícitos de persistência sempre são respeitados
 
@@ -40,4 +42,16 @@ Isso vale mesmo que `confirm_delete` esteja `false` na config para outras açõe
 
 ## 10. Usar links `[[Nota]]` para relacionar entidades
 
-Uma reunião linka para o projeto discutido, uma decisão linka para o projeto ao qual pertence, uma pessoa mencionada em uma reunião pode linkar para a nota dela em `04 - Pessoas`. Isso é o que transforma o vault de uma pilha de arquivos em um grafo navegável dentro do próprio Obsidian.
+Uma reunião linka para o projeto discutido, uma demanda linka para o projeto ao qual pertence e para o conhecimento que usou, um fornecedor citado linka para a nota dele em `05 - Empresas`. Isso é o que transforma o vault de uma pilha de arquivos em um grafo navegável dentro do próprio Obsidian.
+
+Vínculo entre projeto e demanda é **nas duas pontas**: a demanda aponta para o projeto e o projeto lista a demanda. Só uma direção parece suficiente na hora, mas "o que já mexeram nesse sistema?" se responde abrindo o projeto.
+
+## 11. Projeto, demanda e conhecimento são três coisas diferentes
+
+Projeto é onde o sistema existe; demanda é o que será alterado nele; conhecimento é o que se reutiliza em outros contextos. Nunca tratar uma demanda como projeto independente, nunca criar nota de projeto nova por demanda.
+
+As regras completas dessa separação — incluindo formato obrigatório do ATD, onde cada informação mora e por quê — estão na skill irmã: `${CLAUDE_PLUGIN_ROOT}/skills/gestao-demandas/references/projeto-e-demanda.md`.
+
+## 12. Análise de demanda só começa com pedido explícito
+
+`auto_analysis` é `false` e deve continuar assim. Mencionar uma demanda ou um número ATD é informação, não pedido de levantamento. Os gatilhos que valem estão em `${CLAUDE_PLUGIN_ROOT}/skills/gestao-demandas/references/fluxo-analise.md`.
